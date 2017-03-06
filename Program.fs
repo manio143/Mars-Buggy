@@ -9,9 +9,7 @@ let main argv =
 
     SadConsole.Engine.EngineStart.Add (fun _ ->
             SadConsole.Engine.ConsoleRenderStack.Clear()
-            let console = MyConsole(80, 25)
-            SadConsole.Engine.ConsoleRenderStack.Add(console)
-            console.Print(1,2, "Whhoa"))
+            SadConsole.Engine.ConsoleRenderStack.Add(MainConsole(80, 25)))
 
     SadConsole.Engine.Run()
     0 // return an integer exit code

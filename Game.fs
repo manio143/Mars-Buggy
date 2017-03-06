@@ -14,7 +14,7 @@ let editorFill (editor:SurfaceEditor) (fg:Color) (bg:Color) (glyph:int) =
 let welcomeScreen = 
     let mainText = GameObject(Engine.DefaultFont)
 
-    let textSurface = AnimatedTextSurface("default", 42, 14)
+    let textSurface = AnimatedTextSurface("default", 43, 14)
     let frame = textSurface.CreateFrame()
     let editor = SurfaceEditor(TextSurface(1, 1, Engine.DefaultFont))
 
@@ -35,19 +35,15 @@ let welcomeScreen =
     editor.Print(0, 11, "B     B  U     U  G     G  G     G    Y")
     editor.Print(0, 12, "BBBBBB    UUUUU    GGGGG    GGGGG   YY")
 
-    textSurface.Start()
-
     mainText.Animation <- textSurface
     mainText.Position <- Point(20, 4)
     
     mainText
 
-type MyConsole(width, height) =
+type MainConsole(width, height) =
     inherit Console(width, height)
 
-    do base.Print(1, 1, "Hello")
+    override this.Update() = ()
 
-    override this.Update() =
-        welcomeScreen.Update()
     override this.Render() =
         welcomeScreen.Render()
