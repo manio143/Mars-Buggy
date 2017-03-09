@@ -15,6 +15,8 @@ type Surface = {
                 Glyph: int
                }
 
+let defaultSurface = { Foreground = Color.White; Background = Color.Transparent; Glyph = 0}
+
 let editorFill (editor:SurfaceEditor) surface =
     editor.Fill(System.Nullable surface.Foreground,
                 System.Nullable surface.Background,
@@ -56,3 +58,13 @@ let loadAnimation (text:string array) surface =
         | Some npos -> processText npos
     do processText 0
     anim
+
+
+let createWithAnimation x y text surface =
+     let entity = create ()
+     entity.Animation <- loadAnimation text surface
+     entity.Position <- Point(x, y)
+     entity
+
+let createWithAnimationFromFile x y animName surface =
+    createWithAnimation x y (Data.loadAnim animName) surface

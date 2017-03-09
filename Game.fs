@@ -9,16 +9,9 @@ open ConsoleObject
 open Microsoft.Xna.Framework
 
 let welcomeScreen = 
-    let mainText = ConsoleObject.create()
+    createWithAnimationFromFile 20 4 "welcomeScreen"
+    <| {defaultSurface with Foreground = Color.OrangeRed}
 
-    let animation = 
-        { Foreground = Color.OrangeRed; Background = Color.Transparent; Glyph = 0}
-        |> ConsoleObject.loadAnimation (Data.loadAnim "welcomeScreen")
-
-    mainText.Animation <- animation
-    mainText.Position <- Point(20, 4)
-    
-    mainText
 
 type MainConsole(width, height) =
     inherit Console(width, height)
