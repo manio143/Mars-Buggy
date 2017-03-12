@@ -5,12 +5,7 @@ open System.IO
 
 let assembly = Assembly.GetExecutingAssembly()
 
-//TODO:Remove if not required on Windows
-//do printfn "%A" (assembly.GetManifestResourceNames())
-//let defaultNamespace = "MarsBuggy"
-
-let openEmbeded name = 
-    //let fileName = defaultNamespace + ".Content." + name
+let openEmbeded name =
     assembly.GetManifestResourceStream(name)
 
 let loadAnim name =
