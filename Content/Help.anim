@@ -1,0 +1,7 @@
+﻿#####               Mars-Buggy              #####
+
+This game is a clone of Moon-Buggy, written in F#
+You're on Mars and need to drive the vehicle in
+such a way that it doesn't fall into any crater.
+
+Press [Space] to jump.

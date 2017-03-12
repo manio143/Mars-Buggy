@@ -77,5 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\welcomeScreen.anim" />
+    <EmbeddedResource Include="Content\Help.anim" />
   </ItemGroup>
 </Project>

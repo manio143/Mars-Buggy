@@ -7,7 +7,7 @@ open SadConsole
 type MainConsole(width, height) =
     inherit Console(width, height)
 
-    let mutable Scene = Scenes.startScene
+    let mutable Scene = Scenes.StartScene.scene
 
     let processKeyboardAndUpdate =
         Scenes.processKeyboard (Engine.Keyboard)
