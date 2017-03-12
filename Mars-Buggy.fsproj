@@ -46,6 +46,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Data.fs" />
     <Compile Include="ConsoleObject.fs" />
+    <Compile Include="Scenes.fs" />
     <Compile Include="Game.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
