@@ -51,8 +51,27 @@ module HelpScene =
     let scene = { Type = Help; ConsoleObjects = [helpInfo; instructions] }
 
 module GameScene =
-    let scene = {ConsoleObjects = []; Type = Game}
+    let wheels = createWithAnimationFromFile 0 1 "wheels" defaultSurface
+    do wheels.Animation.AnimationDuration <- 2.0f
+    do wheels.Animation.Repeat <- true
+    do wheels.Animation.Start()
 
+    let onGroundBuggy = new MultiObject([
+                                            createWithAnimationFromFile 0 0 "buggy" defaultSurface
+                                            wheels
+                                        ])
+    do onGroundBuggy.Position <- Point(70, 20)
+    let inAirBuggy = new MultiObject([
+                                        createWithAnimationFromFile 0 0 "jump" defaultSurface
+                                        wheels
+                                     ])
+    let fallenBuggy = new MultiObject([
+                                        createWithAnimationFromFile 0 0 "fall" defaultSurface
+                                      ])
+    let floor =
+        createWithAnimation 0 23 [|String.replicate 80 "#"|]
+        <| defaultSurface
+    let scene = {ConsoleObjects = floor::(onGroundBuggy.Objects()); Type = Game}
 
 
 

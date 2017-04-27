@@ -68,3 +68,17 @@ let createWithAnimation x y text surface =
 
 let createWithAnimationFromFile x y animName surface =
     createWithAnimation x y (Data.loadAnim animName) surface
+
+
+
+type MultiObject(go:GameObject list) =
+    let positions = go |> List.map (fun x-> x.Position)
+
+    let mutable position = Point.Zero
+    member this.Position 
+        with get () = position
+        and set p = position <- p
+
+    member this.Objects () =
+        List.iter2 (fun p (o:GameObject) -> o.Position <- position + p) positions go
+        go
