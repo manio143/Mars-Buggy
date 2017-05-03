@@ -54,8 +54,10 @@ module HelpScene =
 module GameScene =
     type PlayerState = Running | Jumping | Fallen
 
+    let groundLevel = 20
+
     let wheels = createWithAnimationFromFile 0 1 "wheels" defaultSurface
-    do wheels.Animation.AnimationDuration <- 2.0f
+    do wheels.Animation.AnimationDuration <- 1.0f
     do wheels.Animation.Repeat <- true
     do wheels.Animation.Start()
 
@@ -63,7 +65,7 @@ module GameScene =
                                             createWithAnimationFromFile 0 0 "buggy" defaultSurface
                                             wheels
                                         ])
-    do onGroundBuggy.Position <- Point(70, 20)
+    do onGroundBuggy.Position <- Point(70, groundLevel)
     let inAirBuggy = new MultiObject([
                                         createWithAnimationFromFile 0 0 "jump" defaultSurface
                                         wheels
@@ -78,21 +80,22 @@ module GameScene =
     let mutable currentState = Running
     let mutable currentAnimationObject = onGroundBuggy
 
-    let mutable speed = 500
+    let mutable speed = 400
 
     let setState newState =
-        let prevAnimationObject = currentAnimationObject
-        match newState with
-        | Running ->
-            currentState <- Running
-            currentAnimationObject <- onGroundBuggy
-        | Jumping ->
-            currentState <- Jumping
-            currentAnimationObject <- inAirBuggy
-        | Fallen ->
-            currentState <- Fallen
-            currentAnimationObject <- fallenBuggy
-        currentAnimationObject.Position <- prevAnimationObject.Position
+        if newState <> currentState then
+            let prevAnimationObject = currentAnimationObject
+            match newState with
+            | Running ->
+                currentState <- Running
+                currentAnimationObject <- onGroundBuggy
+            | Jumping ->
+                currentState <- Jumping
+                currentAnimationObject <- inAirBuggy
+            | Fallen ->
+                currentState <- Fallen
+                currentAnimationObject <- fallenBuggy
+            currentAnimationObject.Position <- prevAnimationObject.Position
 
     let sleep (miliseconds:int) = async { do Task.Delay(miliseconds).Wait() }
 
@@ -100,10 +103,10 @@ module GameScene =
         if currentState = Running then
             setState Jumping
             async {
-                for i in 1..4 do
+                for i in 1..3 do
                     currentAnimationObject.Position <- currentAnimationObject.Position + Point(0,-1)
                     do! sleep speed
-                for i in 1..4 do
+                for i in 1..3 do
                     currentAnimationObject.Position <- currentAnimationObject.Position + Point(0,1)
                     do! sleep speed
             }
@@ -115,7 +118,7 @@ module GameScene =
 
 
 
-let processSingleKey key func (keyInfo:Keyboard) scene = if keyInfo.IsKeyDown(key) then func() else scene
+let processSingleKey key func (keyInfo:Keyboard) scene = if keyInfo.IsKeyPressed(key) then func() else scene
 
 let newGame = processSingleKey Input.Keys.Space <| fun () -> GameScene.getScene()
 let quit =  processSingleKey Input.Keys.Q <| fun () -> SadConsole.Game.Instance.Exit(); {ConsoleObjects = []; Type = Game}
@@ -138,6 +141,8 @@ let helpSceneHandler = {
 
 let gameUpdate delta scene =
     List.iter (fun (o:GameObject) -> o.Update delta) scene.ConsoleObjects
+    if GameScene.currentAnimationObject.Position.Y = GameScene.groundLevel then
+        GameScene.setState GameScene.PlayerState.Running
     //TODO: check collision with hole
     GameScene.getScene()
 
