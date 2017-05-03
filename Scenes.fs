@@ -1,5 +1,7 @@
 ﻿module Scenes
 
+open System.Threading.Tasks
+
 open SadConsole.Consoles
 open SadConsole.Game
 open SadConsole.Input
@@ -51,6 +53,8 @@ module HelpScene =
     let scene = { Type = Help; ConsoleObjects = [helpInfo; instructions] }
 
 module GameScene =
+    type PlayerState = Running | Jumping | Fallen
+
     let wheels = createWithAnimationFromFile 0 1 "wheels" defaultSurface
     do wheels.Animation.AnimationDuration <- 2.0f
     do wheels.Animation.Repeat <- true
@@ -71,13 +75,43 @@ module GameScene =
     let floor =
         createWithAnimation 0 23 [|String.replicate 80 "#"|]
         <| defaultSurface
-    let scene = {ConsoleObjects = floor::(onGroundBuggy.Objects()); Type = Game}
+
+    let mutable currentState = Running
+    let mutable currentAnimationObject = onGroundBuggy
+
+    let mutable speed = 500
+
+    let setState newState =
+        match newState with
+        | Running ->
+            currentState <- Running
+            currentAnimationObject <- onGroundBuggy
+        | Jumping ->
+            currentState <- Jumping
+            currentAnimationObject <- inAirBuggy
+        | Fallen ->
+            currentState <- Fallen
+            currentAnimationObject <- fallenBuggy
+
+    let sleep (miliseconds:int) = Async.AwaitTask(Task.Delay(miliseconds))
+
+    let jump () = async {
+        if currentState = Running then
+            setState Jumping
+            for i in 1..4 do
+                currentAnimationObject.Position <- currentAnimationObject.Position + Point(0,1)
+                do! sleep speed
+        else
+            ()
+    }
+    
+    let getScene () = {ConsoleObjects = floor::(currentAnimationObject.Objects()); Type = Game}
 
 
 
 let processSingleKey key func (keyInfo:KeyboardInfo) scene = if keyInfo.IsKeyDown(key) then func() else scene
 
-let newGame = processSingleKey Input.Keys.Space <| fun () -> GameScene.scene
+let newGame = processSingleKey Input.Keys.Space <| fun () -> GameScene.getScene()
 let quit =  processSingleKey Input.Keys.Q <| fun () -> Engine.MonoGameInstance.Exit(); {ConsoleObjects = []; Type = Game}
 let help = processSingleKey Input.Keys.H <| fun () -> HelpScene.scene
 
