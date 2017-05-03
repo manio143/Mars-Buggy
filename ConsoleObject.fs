@@ -1,8 +1,8 @@
 ﻿module ConsoleObject
 
-open SadConsole.Consoles
-open SadConsole.Game
 open SadConsole
+open SadConsole.Surfaces
+open SadConsole.GameHelpers
 
 open Microsoft.Xna.Framework
 
@@ -22,12 +22,12 @@ let editorFill (editor:SurfaceEditor) surface =
                 System.Nullable surface.Background,
                 System.Nullable surface.Glyph) |> ignore
 
-let create () = GameObject(Engine.DefaultFont)
+let create animation = new GameObject(animation)
 
-let animationWithName name width height = AnimatedTextSurface(name, width, height)
+let animationWithName name width height = AnimatedSurface(name, width, height)
 let animation = animationWithName "default"
 
-let addFrame (animation:AnimatedTextSurface) = animation.CreateFrame()
+let addFrame (animation:AnimatedSurface) = animation.CreateFrame()
 
 let editor frame = SurfaceEditor(frame)
 
@@ -61,8 +61,7 @@ let loadAnimation (text:string array) surface =
 
 
 let createWithAnimation x y text surface =
-     let entity = create ()
-     entity.Animation <- loadAnimation text surface
+     let entity = create (loadAnimation text surface)
      entity.Position <- Point(x, y)
      entity
 

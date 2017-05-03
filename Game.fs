@@ -1,6 +1,5 @@
 ﻿module Game
 
-open SadConsole.Consoles
 open SadConsole
 
 
@@ -9,13 +8,13 @@ type MainConsole(width, height) =
 
     let mutable Scene = Scenes.StartScene.scene
 
-    let processKeyboardAndUpdate =
-        Scenes.processKeyboard (Engine.Keyboard)
-        >> Scenes.update (Engine.GameTimeElapsedUpdate)
+    override this.ProcessKeyboard keyInfo =
+        Scene <- Scenes.processKeyboard keyInfo Scene
+        true
 
-    override this.Update() =
-        Scene <- processKeyboardAndUpdate Scene
+    override this.Update delta =
+        Scene <- Scenes.update delta Scene
 
-    override this.Render() =
+    override this.Draw delta =
         Scene.ConsoleObjects
-        |> List.iter (fun entity -> entity.Render())
+        |> List.iter (fun entity -> entity.Draw(delta))

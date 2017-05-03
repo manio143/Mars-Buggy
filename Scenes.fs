@@ -2,10 +2,9 @@
 
 open System.Threading.Tasks
 
-open SadConsole.Consoles
-open SadConsole.Game
-open SadConsole.Input
 open SadConsole
+open SadConsole.Input
+open SadConsole.GameHelpers
 
 open Microsoft.Xna.Framework
 
@@ -20,8 +19,8 @@ type Scene = {
              }
 
 type SceneHandler = {
-                        Update: float -> Scene -> Scene
-                        ProcessKeyboard: KeyboardInfo -> Scene -> Scene
+                        Update: System.TimeSpan -> Scene -> Scene
+                        ProcessKeyboard: Keyboard -> Scene -> Scene
                     }
 
 
@@ -109,10 +108,10 @@ module GameScene =
 
 
 
-let processSingleKey key func (keyInfo:KeyboardInfo) scene = if keyInfo.IsKeyDown(key) then func() else scene
+let processSingleKey key func (keyInfo:Keyboard) scene = if keyInfo.IsKeyDown(key) then func() else scene
 
 let newGame = processSingleKey Input.Keys.Space <| fun () -> GameScene.getScene()
-let quit =  processSingleKey Input.Keys.Q <| fun () -> Engine.MonoGameInstance.Exit(); {ConsoleObjects = []; Type = Game}
+let quit =  processSingleKey Input.Keys.Q <| fun () -> SadConsole.Game.Instance.Exit(); {ConsoleObjects = []; Type = Game}
 let help = processSingleKey Input.Keys.H <| fun () -> HelpScene.scene
 
 let startSceneHandler = {

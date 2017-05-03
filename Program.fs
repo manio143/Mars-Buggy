@@ -1,16 +1,19 @@
-﻿open SadConsole.Consoles
+﻿open SadConsole
+
 open Microsoft.Xna.Framework
 
 open Game
 
 [<EntryPoint>]
 let main argv = 
-    SadConsole.Engine.Initialize("IBM.font", 80, 25);
+    Game.Create("IBM.font", 80, 25)
 
-    SadConsole.Engine.EngineStart.Add (fun _ ->
-            SadConsole.Engine.ConsoleRenderStack.Clear()
-            SadConsole.Engine.ConsoleRenderStack.Add(MainConsole(80, 25)))
+    let init() =
+        let console = new MainConsole(80, 25)
+        Global.CurrentScreen <- console
+        Global.FocusedConsoles.Set console
 
-    SadConsole.Engine.Run()
+    Game.OnInitialize <- new System.Action(init)
+
+    Game.Instance.Run()
     0 // return an integer exit code
-
